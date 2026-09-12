@@ -1,11 +1,29 @@
+import { useState } from "react"
+import Header from "./components/Header"
+import QRForm from "./components/QRForm"
+import QRPreview from "./components/QRPreview"
+
 function App() {
-  return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-white">
-          QR Generator
-        </h1>
-      </main>
-  )
+    const [text, setText] = useState("")
+    const [qrValue, setQrValue] = useState("")
+
+    const handleGenerate = () => {
+        setQrValue(text)
+    }
+
+    return (
+        <>
+            <Header />
+
+            <QRForm
+                value={text}
+                onChange={setText}
+                onSubmit={handleGenerate}
+            />
+
+            <QRPreview value={qrValue} />
+        </>
+    )
 }
 
 export default App
