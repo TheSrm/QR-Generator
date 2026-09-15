@@ -1,6 +1,6 @@
 import QRForm from "./components/QRForm"
 import QRPreview from "./components/QRPreview"
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react" // <-- Cambiado aquí (import nombrado + /react)
 import { useQRState } from "./hooks/UseQRState"
 
 export default function App() {
