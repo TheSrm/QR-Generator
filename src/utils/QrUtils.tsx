@@ -98,3 +98,37 @@ export function validateQRInput(text: string): { valid: boolean; error?: string 
 
     return { valid: true }
 }
+
+export function downloadQRAsSVG(svgElement: SVGElement, filename?: string): void {
+    // 1. Clonar el nodo SVG para no modificar la vista web
+    const svgClone = svgElement.cloneNode(true) as SVGElement
+
+    // 2. Extraer o calcular el viewBox original
+    const viewBox = svgClone.getAttribute("viewBox") || "0 0 256 256"
+    svgClone.setAttribute("viewBox", viewBox)
+    svgClone.setAttribute("width", "512")
+    svgClone.setAttribute("height", "512")
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+
+    // 3. Crear un rectángulo de fondo oscuro que ocupe exactamente todo el lienzo
+    const [, , w, h] = viewBox.split(" ").map(Number)
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect")
+    rect.setAttribute("width", String(w || 256))
+    rect.setAttribute("height", String(h || 256))
+    rect.setAttribute("fill", "#0a0a0a")
+
+    // 4. Insertar el fondo como primer elemento (por detrás del patrón del QR)
+    svgClone.insertBefore(rect, svgClone.firstChild)
+
+    // 5. Convertir a Blob e inyectar la descarga
+    const svgData = new XMLSerializer().serializeToString(svgClone)
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" })
+    const svgUrl = URL.createObjectURL(svgBlob)
+
+    const link = document.createElement("a")
+    link.download = filename || `qr-${Date.now()}.svg`
+    link.href = svgUrl
+    link.click()
+
+    URL.revokeObjectURL(svgUrl)
+}

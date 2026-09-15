@@ -81,7 +81,7 @@ function QRForm({
                 <button
                     type="button"
                     onClick={onSubmit}
-                    className="mt-6 w-full rounded-lg active:bg-neutral-300 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200"
+                    className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
                 >
                     Generar QR
                 </button>

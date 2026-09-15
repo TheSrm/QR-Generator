@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type DragEvent } from "react"
 import type { QRReaderProps } from "../types/types.ts"
-import { decodeQRFromImage } from "../utils/QRDecoderUtils.ts"
+import { decodeQRFromImage } from "../utils/QRDecoderUtils"
 
 function QRReader({ onResult }: QRReaderProps) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)

@@ -99,3 +99,22 @@ export type UrlCardProps = {
 export type TextCardProps = {
     text: string
 }
+
+export type QRHistoryItem = {
+    id: string
+    text: string
+    type: QRMode
+    timestamp: number
+}
+
+export type QRHistoryProps = {
+    history: QRHistoryItem[]
+    onSelect: (item: QRHistoryItem) => void
+    onClear: () => void
+}
+
+export type QRHistoryWidgetProps = {
+    history: QRHistoryItem[]
+    onSelect: (item: QRHistoryItem) => void
+    onClear: () => void
+}

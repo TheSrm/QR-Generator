@@ -1,5 +1,5 @@
 import type { ScannedContentProps } from "../../types/types"
-import { parseVCardString, parseWifiString } from "../../utils/qrParsers"
+import { parseVCardString, parseWifiString } from "../../utils/QRParsers.ts"
 import { looksLikeUrl } from "../../utils/QrUtils"
 import { VCardCard } from "./VCardCard"
 import { WifiCard } from "./WifiCard"
