@@ -1,59 +1,94 @@
 /**
- * Convierte un SVG element a PNG y lo descarga
+ * Convierte un SVG element a PNG y lo descarga con fondo visible y alta resolución
+ *//**
+ * Función auxiliar interna: convierte un SVG Element a un HTMLCanvasElement renderizado.
  */
-export function downloadQRAsPNG(svgElement: SVGElement, filename?: string): void {
-    const svgData = new XMLSerializer().serializeToString(svgElement)
-    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" })
-    const svgUrl = URL.createObjectURL(svgBlob)
+function drawQRToCanvas(svgElement: SVGElement): Promise<HTMLCanvasElement | null> {
+    return new Promise((resolve) => {
+        const rect = svgElement.getBoundingClientRect()
+        const width = rect.width || 240
+        const height = rect.height || 240
 
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-    const img = new Image()
+        // Clonar e inyectar atributos explícitos de ancho y alto
+        const svgCloned = svgElement.cloneNode(true) as SVGElement
+        svgCloned.setAttribute("width", width.toString())
+        svgCloned.setAttribute("height", height.toString())
 
-    img.onload = () => {
-        // 2x para mejor calidad
-        canvas.width = img.width * 2
-        canvas.height = img.height * 2
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height)
+        const svgData = new XMLSerializer().serializeToString(svgCloned)
+        const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" })
+        const svgUrl = URL.createObjectURL(svgBlob)
 
-        const pngUrl = canvas.toDataURL("image/png")
-        const link = document.createElement("a")
-        link.download = filename || `qr-${Date.now()}.png`
-        link.href = pngUrl
-        link.click()
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+        const img = new Image()
 
-        URL.revokeObjectURL(svgUrl)
-    }
+        img.onload = () => {
+            const scale = 2
+            canvas.width = width * scale
+            canvas.height = height * scale
 
-    img.src = svgUrl
+            if (ctx) {
+                // Fondo oscuro para contrastar los módulos del QR
+                ctx.fillStyle = "#0a0a0a"
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+            }
+
+            URL.revokeObjectURL(svgUrl)
+            resolve(canvas)
+        }
+
+        img.onerror = () => {
+            URL.revokeObjectURL(svgUrl)
+            resolve(null)
+        }
+
+        img.src = svgUrl
+    })
 }
 
 /**
- * Copia texto al portapapeles con fallback
+ * Convierte un SVG element a PNG y lo descarga
  */
-export async function copyToClipboard(text: string): Promise<boolean> {
-    try {
-        // API moderna
-        await navigator.clipboard.writeText(text)
-        return true
-    } catch (err) {
-        console.warn("Clipboard API failed, using fallback:", err)
+export async function downloadQRAsPNG(svgElement: SVGElement, filename?: string): Promise<void> {
+    const canvas = await drawQRToCanvas(svgElement)
+    if (!canvas) return
 
-        // Fallback para navegadores antiguos o HTTP
-        try {
-            const textArea = document.createElement("textarea")
-            textArea.value = text
-            textArea.style.position = "fixed"
-            textArea.style.opacity = "0"
-            document.body.appendChild(textArea)
-            textArea.select()
-            document.execCommand("copy")
-            document.body.removeChild(textArea)
-            return true
-        } catch (fallbackErr) {
-            console.error("Copy failed:", fallbackErr)
-            return false
-        }
+    const pngUrl = canvas.toDataURL("image/png")
+    const link = document.createElement("a")
+    link.download = filename || `qr-${Date.now()}.png`
+    link.href = pngUrl
+    link.click()
+}
+
+/**
+ * Convierte el elemento SVG del QR a un Blob PNG y lo copia al portapapeles
+ */
+export async function copyQRToClipboard(svgElement: SVGElement): Promise<boolean> {
+    try {
+        const canvas = await drawQRToCanvas(svgElement)
+        if (!canvas) return false
+
+        return new Promise((resolve) => {
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    resolve(false)
+                    return
+                }
+
+                try {
+                    const data = [new ClipboardItem({ [blob.type]: blob })]
+                    await navigator.clipboard.write(data)
+                    resolve(true)
+                } catch (err) {
+                    console.error("Error al copiar la imagen al portapapeles:", err)
+                    resolve(false)
+                }
+            }, "image/png")
+        })
+    } catch (err) {
+        console.error("No se pudo procesar la imagen para copiar:", err)
+        return false
     }
 }
 

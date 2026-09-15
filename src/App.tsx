@@ -1,15 +1,10 @@
-import { useState } from "react"
 import Header from "./components/Header"
 import QRForm from "./components/QRForm"
 import QRPreview from "./components/QRPreview"
+import {useQRState} from "./hooks/UseQRState.ts";
 
 function App() {
-    const [text, setText] = useState("")
-    const [qrValue, setQrValue] = useState("")
-
-    const handleGenerate = () => {
-        setQrValue(text)
-    }
+    const qr = useQRState()
 
     return (
         <main className="min-h-screen bg-neutral-950 text-neutral-50 antialiased">
@@ -18,12 +13,19 @@ function App() {
 
                 <div className="mt-12 grid gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                     <QRForm
-                        value={text}
-                        onChange={setText}
-                        onSubmit={handleGenerate}
+                        mode={qr.mode}
+                        onModeChange={qr.setMode}
+                        value={qr.text}
+                        onChange={qr.setText}
+                        wifiSsid={qr.wifiSsid}
+                        wifiPassword={qr.wifiPassword}
+                        wifiSecurity={qr.wifiSecurity}
+                        onWifiChange={qr.handleWifiChange}
+                        onSubmit={qr.generate}
+                        error={qr.error}
                     />
 
-                    <QRPreview value={qrValue} />
+                    <QRPreview value={qr.qrValue} />
                 </div>
             </div>
         </main>
