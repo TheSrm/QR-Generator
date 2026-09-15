@@ -1,5 +1,6 @@
 import type { FormEvent } from "react"
 import type { QRFormProps } from "../types/types.ts"
+import QRReader from "./QReader"
 
 function QRForm({
                     mode,
@@ -10,6 +11,8 @@ function QRForm({
                     wifiPassword,
                     wifiSecurity,
                     onWifiChange,
+                    vCardData,
+                    onVCardChange,
                     onSubmit,
                     error
                 }: QRFormProps) {
@@ -31,15 +34,14 @@ function QRForm({
             onSubmit={handleSubmit}
             className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8"
         >
-            {/* Selector de modo */}
-            <div className="mb-6 flex rounded-lg border border-neutral-800 bg-neutral-950 p-1">
+            <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-neutral-800 bg-neutral-950 p-1.5 sm:grid-cols-4">
                 <button
                     type="button"
                     onClick={() => onModeChange("text")}
-                    className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition ${
+                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
                         mode === "text"
-                            ? "bg-neutral-800 text-neutral-50"
-                            : "text-neutral-400 hover:text-neutral-300"
+                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
+                            : "text-neutral-400 hover:text-neutral-200"
                     }`}
                 >
                     Texto / URL
@@ -47,17 +49,39 @@ function QRForm({
                 <button
                     type="button"
                     onClick={() => onModeChange("wifi")}
-                    className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition ${
+                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
                         mode === "wifi"
-                            ? "bg-neutral-800 text-neutral-50"
-                            : "text-neutral-400 hover:text-neutral-300"
+                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
+                            : "text-neutral-400 hover:text-neutral-200"
                     }`}
                 >
                     WiFi
                 </button>
+                <button
+                    type="button"
+                    onClick={() => onModeChange("vcard")}
+                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
+                        mode === "vcard"
+                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
+                            : "text-neutral-400 hover:text-neutral-200"
+                    }`}
+                >
+                    Contacto
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onModeChange("scan")}
+                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
+                        mode === "scan"
+                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
+                            : "text-neutral-400 hover:text-neutral-200"
+                    }`}
+                >
+                    Leer QR
+                </button>
             </div>
 
-            {mode === "text" ? (
+            {mode === "text" && (
                 <>
                     <h2 className="text-lg font-semibold text-neutral-50">Contenido</h2>
                     <p className="mt-2 text-sm leading-6 text-neutral-400">
@@ -78,7 +102,9 @@ function QRForm({
                         />
                     </div>
                 </>
-            ) : (
+            )}
+
+            {mode === "wifi" && (
                 <>
                     <h2 className="text-lg font-semibold text-neutral-50">Red WiFi</h2>
                     <p className="mt-2 text-sm leading-6 text-neutral-400">
@@ -135,7 +161,78 @@ function QRForm({
                 </>
             )}
 
-            {error && (
+            {mode === "vcard" && (
+                <>
+                    <h2 className="text-lg font-semibold text-neutral-50">Tarjeta de Contacto</h2>
+                    <p className="mt-2 text-sm leading-6 text-neutral-400">
+                        Genera un QR para añadir un contacto directamente a la agenda del móvil.
+                    </p>
+
+                    <div className="mt-6 space-y-4">
+                        <div>
+                            <label htmlFor="vcard-name" className="mb-1 block text-sm font-medium text-neutral-300">
+                                Nombre completo *
+                            </label>
+                            <input
+                                id="vcard-name"
+                                type="text"
+                                value={vCardData.name}
+                                onChange={(e) => onVCardChange("name", e.target.value)}
+                                placeholder="Ej. Ana Martínez"
+                                className={inputClasses(!!error)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="vcard-phone" className="mb-1 block text-sm font-medium text-neutral-300">
+                                Teléfono
+                            </label>
+                            <input
+                                id="vcard-phone"
+                                type="tel"
+                                value={vCardData.phone}
+                                onChange={(e) => onVCardChange("phone", e.target.value)}
+                                placeholder="+34 600 000 000"
+                                className={inputClasses(false)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="vcard-email" className="mb-1 block text-sm font-medium text-neutral-300">
+                                Email
+                            </label>
+                            <input
+                                id="vcard-email"
+                                type="email"
+                                value={vCardData.email}
+                                onChange={(e) => onVCardChange("email", e.target.value)}
+                                placeholder="ana@empresa.com"
+                                className={inputClasses(false)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="vcard-company" className="mb-1 block text-sm font-medium text-neutral-300">
+                                Empresa
+                            </label>
+                            <input
+                                id="vcard-company"
+                                type="text"
+                                value={vCardData.company}
+                                onChange={(e) => onVCardChange("company", e.target.value)}
+                                placeholder="Mi Empresa S.L."
+                                className={inputClasses(false)}
+                            />
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {mode === "scan" && (
+                <QRReader onResult={(decodedText) => onChange(decodedText)} />
+            )}
+
+            {error && mode !== "scan" && (
                 <p className="mt-4 flex items-center gap-1.5 text-sm text-red-400">
                     <svg className="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -144,12 +241,14 @@ function QRForm({
                 </p>
             )}
 
-            <button
-                type="submit"
-                className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
-            >
-                Generar QR
-            </button>
+            {mode !== "scan" && (
+                <button
+                    type="submit"
+                    className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
+                >
+                    Generar QR
+                </button>
+            )}
         </form>
     )
 }

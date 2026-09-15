@@ -1,9 +1,7 @@
 import { useState } from "react"
-import {  validateQRInput } from "../utils/QrUtils"
-import {generateWifiString,  validateWifiInput} from "../utils/WifiUtils.tsx"
-
-export type QRMode = "text" | "wifi"
-export type WifiSecurity = "WPA" | "WEP" | "nopass"
+import type { QRMode, WifiSecurity, VCardData } from "../types/types"
+import { validateQRInput } from "../utils/QrUtils"
+import { generateWifiString, validateWifiInput, generateVCardString, validateVCardInput } from "../utils/WifiUtils"
 
 export function useQRState() {
     const [mode, setMode] = useState<QRMode>("text")
@@ -16,14 +14,33 @@ export function useQRState() {
     const [wifiPassword, setWifiPassword] = useState("")
     const [wifiSecurity, setWifiSecurity] = useState<WifiSecurity>("WPA")
 
+    // vCard
+    const [vCardData, setVCardData] = useState<VCardData>({
+        name: "",
+        phone: "",
+        email: "",
+        company: ""
+    })
+
     // QR generado
     const [qrValue, setQrValue] = useState("")
     const [error, setError] = useState<string | null>(null)
+
+    const handleModeChange = (newMode: QRMode) => {
+        setMode(newMode)
+        setQrValue("") // Limpiar QR al cambiar de pestaña
+        setError(null)
+    }
 
     const handleWifiChange = (field: "ssid" | "password" | "security", value: string) => {
         if (field === "ssid") setWifiSsid(value)
         if (field === "password") setWifiPassword(value)
         if (field === "security") setWifiSecurity(value as WifiSecurity)
+        if (error) setError(null)
+    }
+
+    const handleVCardChange = (field: keyof VCardData, value: string) => {
+        setVCardData((prev) => ({ ...prev, [field]: value }))
         if (error) setError(null)
     }
 
@@ -39,6 +56,11 @@ export function useQRState() {
             validation = validateWifiInput(wifiSsid, wifiPassword, wifiSecurity)
             if (validation.valid) {
                 setQrValue(generateWifiString(wifiSsid, wifiPassword, wifiSecurity))
+            }
+        } else if (mode === "vcard") {
+            validation = validateVCardInput(vCardData.name)
+            if (validation.valid) {
+                setQrValue(generateVCardString(vCardData))
             }
         } else {
             validation = validateQRInput(text)
@@ -63,14 +85,17 @@ export function useQRState() {
 
     return {
         mode,
-        setMode,
+        setMode: handleModeChange,
         text,
         setText: handleTextChange,
         wifiSsid,
         wifiPassword,
         wifiSecurity,
         handleWifiChange,
+        vCardData,
+        handleVCardChange,
         qrValue,
+        setQrValue,
         error,
         generate,
         reset

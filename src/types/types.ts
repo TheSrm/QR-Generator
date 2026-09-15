@@ -1,8 +1,14 @@
-export type QRMode = "text" | "wifi"
+export type QRMode = "text" | "wifi" | "vcard" | "scan"
 export type WifiSecurity = "WPA" | "WEP" | "nopass"
 
+export type VCardData = {
+    name: string
+    phone: string
+    email: string
+    company: string
+}
+
 export type QRFormProps = {
-    // Modo
     mode: QRMode
     onModeChange: (mode: QRMode) => void
 
@@ -16,11 +22,16 @@ export type QRFormProps = {
     wifiSecurity: WifiSecurity
     onWifiChange: (field: "ssid" | "password" | "security", value: string) => void
 
-    // Submit
+    // vCard
+    vCardData: VCardData
+    onVCardChange: (field: keyof VCardData, value: string) => void
+
+    // Submit & Error
     onSubmit: () => void
     error: string | null
 }
 
 export type QRPreviewProps = {
     value: string
+    mode: QRMode
 }

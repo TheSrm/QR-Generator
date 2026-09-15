@@ -1,9 +1,10 @@
+import type { WifiSecurity, VCardData } from "../types/types"
+
 export function generateWifiString(
     ssid: string,
     password: string,
-    security: "WPA" | "WEP" | "nopass"
+    security: WifiSecurity
 ): string {
-    // Escapar caracteres especiales
     const escape = (str: string) => str
         .replace(/\\/g, "\\\\")
         .replace(/;/g, "\\;")
@@ -13,45 +14,51 @@ export function generateWifiString(
     const ssidEscaped = escape(ssid)
     const passwordEscaped = escape(password)
 
-    // Si no hay contraseña, forzar nopass
     const actualSecurity = security === "nopass" ? "nopass" : security
     const passwordField = actualSecurity === "nopass" ? "" : `P:${passwordEscaped};`
 
     return `WIFI:T:${actualSecurity};S:${ssidEscaped};${passwordField};`
 }
 
-/**
- * Valida los campos del formulario WiFi
- */
 export function validateWifiInput(
     ssid: string,
     password: string,
-    security: "WPA" | "WEP" | "nopass"
+    security: WifiSecurity
 ): { valid: boolean; error?: string } {
-    // SSID obligatorio
     if (!ssid.trim()) {
         return { valid: false, error: "El nombre de la red (SSID) es obligatorio" }
     }
-
-    // SSID muy largo (máx 32 caracteres estándar)
     if (ssid.length > 32) {
         return { valid: false, error: "El SSID no puede superar 32 caracteres" }
     }
-
-    // Contraseña obligatoria si no es red abierta
     if (security !== "nopass" && !password) {
         return { valid: false, error: "Introduce la contraseña o selecciona 'Red abierta'" }
     }
-
-    // Contraseña mínima para WPA (8 caracteres)
     if (security === "WPA" && password.length < 8) {
         return { valid: false, error: "WPA requiere mínimo 8 caracteres" }
     }
-
-    // Contraseña mínima para WEP (5 o 13 caracteres)
     if (security === "WEP" && password.length < 5) {
         return { valid: false, error: "WEP requiere mínimo 5 caracteres" }
     }
+    return { valid: true }
+}
 
+export function generateVCardString(data: VCardData): string {
+    return [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `N:;${data.name};;;`,
+        `FN:${data.name}`,
+        data.company ? `ORG:${data.company}` : "",
+        data.phone ? `TEL;TYPE=CELL:${data.phone}` : "",
+        data.email ? `EMAIL:${data.email}` : "",
+        "END:VCARD"
+    ].filter(Boolean).join("\n")
+}
+
+export function validateVCardInput(name: string): { valid: boolean; error?: string } {
+    if (!name.trim()) {
+        return { valid: false, error: "El nombre es obligatorio para la tarjeta de contacto" }
+    }
     return { valid: true }
 }
