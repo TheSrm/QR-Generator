@@ -1,44 +1,4 @@
-function drawQRToCanvas(svgElement: SVGElement): Promise<HTMLCanvasElement | null> {
-    return new Promise((resolve) => {
-        const rect = svgElement.getBoundingClientRect()
-        const width = rect.width || 240
-        const height = rect.height || 240
-
-        const svgCloned = svgElement.cloneNode(true) as SVGElement
-        svgCloned.setAttribute("width", width.toString())
-        svgCloned.setAttribute("height", height.toString())
-
-        const svgData = new XMLSerializer().serializeToString(svgCloned)
-        const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" })
-        const svgUrl = URL.createObjectURL(svgBlob)
-
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        const img = new Image()
-
-        img.onload = () => {
-            const scale = 2
-            canvas.width = width * scale
-            canvas.height = height * scale
-
-            if (ctx) {
-                ctx.fillStyle = "#0a0a0a"
-                ctx.fillRect(0, 0, canvas.width, canvas.height)
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-            }
-
-            URL.revokeObjectURL(svgUrl)
-            resolve(canvas)
-        }
-
-        img.onerror = () => {
-            URL.revokeObjectURL(svgUrl)
-            resolve(null)
-        }
-
-        img.src = svgUrl
-    })
-}
+import { drawQRToCanvas } from "./QRCanvasUtils"
 
 export async function downloadQRAsPNG(svgElement: SVGElement, filename?: string): Promise<void> {
     const canvas = await drawQRToCanvas(svgElement)
@@ -79,26 +39,18 @@ export async function copyQRToClipboard(svgElement: SVGElement): Promise<boolean
     }
 }
 
+// Limpio de document.execCommand
 export async function copyToClipboard(text: string): Promise<boolean> {
     try {
-        await navigator.clipboard.writeText(text)
-        return true
-    } catch (err) {
-        console.warn("Clipboard API failed, usando fallback:", err)
-        try {
-            const textArea = document.createElement("textarea")
-            textArea.value = text
-            textArea.style.position = "fixed"
-            textArea.style.opacity = "0"
-            document.body.appendChild(textArea)
-            textArea.select()
-            document.execCommand("copy")
-            document.body.removeChild(textArea)
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text)
             return true
-        } catch (fallbackErr) {
-            console.error("Copy failed:", fallbackErr)
-            return false
         }
+        console.warn("Clipboard API no está disponible en este entorno.")
+        return false
+    } catch (err) {
+        console.error("Error al copiar texto al portapapeles:", err)
+        return false
     }
 }
 
@@ -112,7 +64,7 @@ export function isValidUrl(url: string): boolean {
 }
 
 export function looksLikeUrl(text: string): boolean {
-    const urlPattern = /^(https?:\/\/|www\.)[^\s]+$/i
+    const urlPattern = /^(https?:\/\/|www\.)\S+$/i
     return urlPattern.test(text)
 }
 

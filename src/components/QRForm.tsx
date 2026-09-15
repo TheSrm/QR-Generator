@@ -1,6 +1,9 @@
-import type { FormEvent } from "react"
-import type { QRFormProps } from "../types/types.ts"
+import type { QRFormProps } from "../types/types"
 import QRReader from "./QReader"
+import { FormTabs } from "./forms/FormTabs"
+import { TextFormFields } from "./forms/TextFormFields"
+import { WifiFormFields } from "./forms/WifiFormFields"
+import { VCardFormFields } from "./forms/VCardFormFields"
 
 function QRForm({
                     mode,
@@ -17,11 +20,6 @@ function QRForm({
                     error
                 }: QRFormProps) {
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        onSubmit()
-    }
-
     const inputClasses = (hasError: boolean) =>
         `w-full rounded-lg border bg-neutral-950 px-4 py-3 text-neutral-50 outline-none transition placeholder:text-neutral-600 focus:ring-4 ${
             hasError
@@ -30,208 +28,45 @@ function QRForm({
         }`
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8"
-        >
-            <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-neutral-800 bg-neutral-950 p-1.5 sm:grid-cols-4">
-                <button
-                    type="button"
-                    onClick={() => onModeChange("text")}
-                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
-                        mode === "text"
-                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
-                            : "text-neutral-400 hover:text-neutral-200"
-                    }`}
-                >
-                    Texto / URL
-                </button>
-                <button
-                    type="button"
-                    onClick={() => onModeChange("wifi")}
-                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
-                        mode === "wifi"
-                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
-                            : "text-neutral-400 hover:text-neutral-200"
-                    }`}
-                >
-                    WiFi
-                </button>
-                <button
-                    type="button"
-                    onClick={() => onModeChange("vcard")}
-                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
-                        mode === "vcard"
-                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
-                            : "text-neutral-400 hover:text-neutral-200"
-                    }`}
-                >
-                    Contacto
-                </button>
-                <button
-                    type="button"
-                    onClick={() => onModeChange("scan")}
-                    className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
-                        mode === "scan"
-                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
-                            : "text-neutral-400 hover:text-neutral-200"
-                    }`}
-                >
-                    Leer QR
-                </button>
-            </div>
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+            {/* Pestañas de navegación */}
+            <FormTabs mode={mode} onModeChange={onModeChange} />
 
+            {/* Renderizado condicional de subcomponentes */}
             {mode === "text" && (
-                <>
-                    <h2 className="text-lg font-semibold text-neutral-50">Contenido</h2>
-                    <p className="mt-2 text-sm leading-6 text-neutral-400">
-                        Introduce una URL o cualquier texto que quieras convertir en QR.
-                    </p>
-
-                    <div className="mt-8">
-                        <label htmlFor="qr-text" className="mb-2 block text-sm font-medium text-neutral-300">
-                            Texto o URL
-                        </label>
-                        <input
-                            id="qr-text"
-                            type="text"
-                            value={value}
-                            onChange={(e) => onChange(e.target.value)}
-                            placeholder="https://ejemplo.com"
-                            className={inputClasses(!!error)}
-                        />
-                    </div>
-                </>
+                <TextFormFields
+                    value={value}
+                    onChange={onChange}
+                    hasError={!!error}
+                    inputClasses={inputClasses}
+                />
             )}
 
             {mode === "wifi" && (
-                <>
-                    <h2 className="text-lg font-semibold text-neutral-50">Red WiFi</h2>
-                    <p className="mt-2 text-sm leading-6 text-neutral-400">
-                        Genera un QR para conectarse automáticamente a la red.
-                    </p>
-
-                    <div className="mt-8 space-y-5">
-                        <div>
-                            <label htmlFor="wifi-ssid" className="mb-2 block text-sm font-medium text-neutral-300">
-                                Nombre de la red (SSID)
-                            </label>
-                            <input
-                                id="wifi-ssid"
-                                type="text"
-                                value={wifiSsid}
-                                onChange={(e) => onWifiChange("ssid", e.target.value)}
-                                placeholder="MiRedWifi"
-                                className={inputClasses(!!error)}
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="wifi-security" className="mb-2 block text-sm font-medium text-neutral-300">
-                                Seguridad
-                            </label>
-                            <select
-                                id="wifi-security"
-                                value={wifiSecurity}
-                                onChange={(e) => onWifiChange("security", e.target.value)}
-                                className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-neutral-50 outline-none transition focus:border-neutral-600 focus:ring-4 focus:ring-neutral-800/50"
-                            >
-                                <option value="WPA">WPA / WPA2 / WPA3</option>
-                                <option value="WEP">WEP</option>
-                                <option value="nopass">Red abierta (sin contraseña)</option>
-                            </select>
-                        </div>
-
-                        {wifiSecurity !== "nopass" && (
-                            <div>
-                                <label htmlFor="wifi-password" className="mb-2 block text-sm font-medium text-neutral-300">
-                                    Contraseña
-                                </label>
-                                <input
-                                    id="wifi-password"
-                                    type="password"
-                                    value={wifiPassword}
-                                    onChange={(e) => onWifiChange("password", e.target.value)}
-                                    placeholder="••••••••"
-                                    className={inputClasses(!!error)}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </>
+                <WifiFormFields
+                    ssid={wifiSsid}
+                    password={wifiPassword}
+                    security={wifiSecurity}
+                    onWifiChange={onWifiChange}
+                    hasError={!!error}
+                    inputClasses={inputClasses}
+                />
             )}
 
             {mode === "vcard" && (
-                <>
-                    <h2 className="text-lg font-semibold text-neutral-50">Tarjeta de Contacto</h2>
-                    <p className="mt-2 text-sm leading-6 text-neutral-400">
-                        Genera un QR para añadir un contacto directamente a la agenda del móvil.
-                    </p>
-
-                    <div className="mt-6 space-y-4">
-                        <div>
-                            <label htmlFor="vcard-name" className="mb-1 block text-sm font-medium text-neutral-300">
-                                Nombre completo *
-                            </label>
-                            <input
-                                id="vcard-name"
-                                type="text"
-                                value={vCardData.name}
-                                onChange={(e) => onVCardChange("name", e.target.value)}
-                                placeholder="Ej. Ana Martínez"
-                                className={inputClasses(!!error)}
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="vcard-phone" className="mb-1 block text-sm font-medium text-neutral-300">
-                                Teléfono
-                            </label>
-                            <input
-                                id="vcard-phone"
-                                type="tel"
-                                value={vCardData.phone}
-                                onChange={(e) => onVCardChange("phone", e.target.value)}
-                                placeholder="+34 600 000 000"
-                                className={inputClasses(false)}
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="vcard-email" className="mb-1 block text-sm font-medium text-neutral-300">
-                                Email
-                            </label>
-                            <input
-                                id="vcard-email"
-                                type="email"
-                                value={vCardData.email}
-                                onChange={(e) => onVCardChange("email", e.target.value)}
-                                placeholder="ana@empresa.com"
-                                className={inputClasses(false)}
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="vcard-company" className="mb-1 block text-sm font-medium text-neutral-300">
-                                Empresa
-                            </label>
-                            <input
-                                id="vcard-company"
-                                type="text"
-                                value={vCardData.company}
-                                onChange={(e) => onVCardChange("company", e.target.value)}
-                                placeholder="Mi Empresa S.L."
-                                className={inputClasses(false)}
-                            />
-                        </div>
-                    </div>
-                </>
+                <VCardFormFields
+                    vCardData={vCardData}
+                    onVCardChange={onVCardChange}
+                    hasError={!!error}
+                    inputClasses={inputClasses}
+                />
             )}
 
             {mode === "scan" && (
-                <QRReader onResult={(decodedText) => onChange(decodedText)} />
+                <QRReader onResult={(decodedText: string) => onChange(decodedText)} />
             )}
 
+            {/* Mensaje de error general */}
             {error && mode !== "scan" && (
                 <p className="mt-4 flex items-center gap-1.5 text-sm text-red-400">
                     <svg className="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -241,15 +76,17 @@ function QRForm({
                 </p>
             )}
 
+            {/* Botón de acción (oculto en modo lectura) */}
             {mode !== "scan" && (
                 <button
-                    type="submit"
-                    className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
+                    type="button"
+                    onClick={onSubmit}
+                    className="mt-6 w-full rounded-lg active:bg-neutral-300 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200"
                 >
                     Generar QR
                 </button>
             )}
-        </form>
+        </div>
     )
 }
 

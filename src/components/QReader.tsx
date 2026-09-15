@@ -1,66 +1,33 @@
 import { useState, type ChangeEvent, type DragEvent } from "react"
-import jsQR from "jsqr"
-
-type QRReaderProps = {
-    onResult: (result: string) => void
-}
+import type { QRReaderProps } from "../types/types.ts"
+import { decodeQRFromImage } from "../utils/QRDecoderUtils.ts"
 
 function QRReader({ onResult }: QRReaderProps) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
-    const processImage = (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            setError("Sube un archivo de imagen válido.")
-            return
-        }
-
+    const handleProcessFile = async (file: File) => {
         setError(null)
-        const reader = new FileReader()
+        setPreviewUrl(URL.createObjectURL(file))
 
-        reader.onload = (e) => {
-            const result = e.target?.result as string
-            setPreviewUrl(result)
-
-            const img = new Image()
-            img.crossOrigin = "anonymous"
-
-            img.onload = () => {
-                const canvas = document.createElement("canvas")
-                const ctx = canvas.getContext("2d")
-
-                canvas.width = img.naturalWidth || img.width
-                canvas.height = img.naturalHeight || img.height
-
-                if (!ctx) return
-
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-                const code = jsQR(imageData.data, imageData.width, imageData.height)
-
-                if (code && code.data) {
-                    onResult(code.data)
-                } else {
-                    onResult("")
-                    setError("No se detectó ningún código QR legible en esta imagen.")
-                }
-            }
-
-            img.src = result
+        try {
+            const decodedText = await decodeQRFromImage(file)
+            onResult(decodedText)
+        } catch (err) {
+            onResult("")
+            setError(err instanceof Error ? err.message : "Error al procesar la imagen")
         }
-
-        reader.readAsDataURL(file)
     }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) processImage(file)
+        if (file) handleProcessFile(file)
     }
 
     const handleDrop = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault()
         const file = e.dataTransfer.files?.[0]
-        if (file) processImage(file)
+        if (file) handleProcessFile(file)
     }
 
     return (
