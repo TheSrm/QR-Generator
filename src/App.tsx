@@ -1,5 +1,6 @@
 import QRForm from "./components/QRForm"
 import QRPreview from "./components/QRPreview"
+import { Analytics } from "@vercel/analytics/next"
 import { useQRState } from "./hooks/UseQRState"
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
 
     return (
         <main className="min-h-screen bg-neutral-950 px-4 py-12 text-neutral-50 sm:px-6 lg:px-8">
+            <Analytics />
             <div className="mx-auto max-w-5xl">
                 <header className="mb-8 text-center sm:text-left">
                     <h1 className="text-2xl font-bold tracking-tight text-neutral-50 sm:text-3xl">
