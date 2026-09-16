@@ -2,18 +2,58 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Studio</title>
 
+  <!-- Estilos de animación mínimos para el skeleton antes de que Tailwind o JS carguen -->
+  <style>
+    @keyframes pulse {
+      50% { opacity: .5; }
+    }
+    .sk-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .sk-bg-subtle { background-color: #e5e5e5; }
+    .sk-bg-card { background-color: #ffffff; }
+    .sk-border { border: 1px solid #e5e5e5; }
 
-  <title>QR Studio — Generador y Lector de Códigos QR</title>
-  <meta name="description" content="Genera y escanea códigos QR de texto, WiFi y vCard de forma rápida, privada y sin publicidad." />
-
-
-  <meta name="theme-color" content="#0a0a0a" />
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #0a0a0a !important; }
+      .sk-bg-subtle { background-color: #262626; }
+      .sk-bg-card { background-color: #171717; }
+      .sk-border { border-color: #262626; }
+    }
+  </style>
 </head>
-<body class="bg-neutral-950">
-<div id="root"></div>
+<body style="margin: 0; background-color: #f5f5f5;">
+<div id="root">
+  <!-- Este Skeleton se muestra de forma instantánea incluso en red muy lenta -->
+  <div class="sk-pulse" style="max-width: 64rem; margin: 0 auto; padding: 3rem 1rem;">
+    <!-- Header Skeleton -->
+    <div class="sk-border" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; margin-bottom: 2rem; border-bottom-width: 1px;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="sk-bg-subtle" style="width: 2.25rem; height: 2.25rem; border-radius: 0.75rem;"></div>
+        <div class="sk-bg-subtle" style="width: 8rem; height: 1.5rem; border-radius: 0.5rem;"></div>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <div class="sk-bg-subtle" style="width: 2.25rem; height: 2.25rem; border-radius: 0.5rem;"></div>
+        <div class="sk-bg-subtle" style="width: 7rem; height: 2.25rem; border-radius: 0.5rem;"></div>
+      </div>
+    </div>
+
+    <!-- Cards Skeleton Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div class="sk-bg-card sk-border" style="height: 28rem; border-radius: 1rem; padding: 2rem;">
+        <div class="sk-bg-subtle" style="height: 2.5rem; width: 100%; border-radius: 0.75rem; margin-bottom: 1.5rem;"></div>
+        <div class="sk-bg-subtle" style="height: 1.5rem; width: 33%; border-radius: 0.5rem; margin-bottom: 0.75rem;"></div>
+        <div class="sk-bg-subtle" style="height: 1rem; width: 66%; border-radius: 0.5rem;"></div>
+      </div>
+      <div class="sk-bg-card sk-border" style="height: 28rem; border-radius: 1rem; padding: 2rem; display: flex; align-items: center; justify-content: center;">
+        <div class="sk-bg-subtle" style="width: 14rem; height: 14rem; border-radius: 0.75rem;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
