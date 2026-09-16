@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { ScannedContentProps } from "../../types/types"
 import { parseVCardString, parseWifiString } from "../../utils/QRParsers.ts"
 import { looksLikeUrl } from "../../utils/QrUtils"
@@ -7,6 +8,8 @@ import { UrlCard } from "./URLCard"
 import { TextCard } from "./TextCard"
 
 export function ScannedContent({ value, onCopyText, copiedText }: ScannedContentProps) {
+    const { t } = useTranslation()
+
     if (!value) {
         return (
             <div className="text-center">
@@ -16,10 +19,10 @@ export function ScannedContent({ value, onCopyText, copiedText }: ScannedContent
                     </svg>
                 </div>
                 <p className="mt-6 text-base font-medium text-neutral-300">
-                    Resultado del escaneo
+                    {t("scanned.placeholderTitle", "Resultado del escaneo")}
                 </p>
                 <p className="mt-2 text-sm text-neutral-500">
-                    Sube una imagen para decodificar la información de su QR.
+                    {t("scanned.placeholderSub", "Sube una imagen para decodificar la información de su QR.")}
                 </p>
             </div>
         )
@@ -33,7 +36,7 @@ export function ScannedContent({ value, onCopyText, copiedText }: ScannedContent
         <div className="w-full max-w-md">
             <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-green-800/60 bg-green-950/40 px-3 py-1 text-xs font-medium text-green-400">
                 <span className="size-1.5 rounded-full bg-green-400"></span>
-                QR Leído Correctamente
+                {t("scanned.successBadge", "QR Leído Correctamente")}
             </span>
 
             {isVCard && <VCardCard contact={parseVCardString(value)} />}
@@ -45,7 +48,7 @@ export function ScannedContent({ value, onCopyText, copiedText }: ScannedContent
                 onClick={() => onCopyText(value)}
                 className="mt-4 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-xs font-medium text-neutral-300 transition hover:bg-neutral-800"
             >
-                {copiedText ? "¡Contenido copiado!" : "Copiar todo el contenido"}
+                {copiedText ? t("scanned.copiedSuccess", "¡Contenido copiado!") : t("scanned.copyAll", "Copiar todo el contenido")}
             </button>
         </div>
     )

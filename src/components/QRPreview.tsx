@@ -1,4 +1,5 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { QRCodeSVG } from "qrcode.react"
 import { downloadQRAsPNG, downloadQRAsSVG, copyQRToClipboard, copyToClipboard } from "../utils/QrUtils"
 import type { QRPreviewProps, QRHistoryItem } from "../types/types"
@@ -11,30 +12,52 @@ type ExtendedQRPreviewProps = QRPreviewProps & {
     onClearHistory?: () => void
 }
 
-function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory }: ExtendedQRPreviewProps) {
-    const svgRef = useRef<HTMLDivElement>(null)
+export default function QRPreview({
+                                      value,
+                                      mode,
+                                      history = [],
+                                      onSelectHistory,
+                                      onClearHistory
+                                  }: ExtendedQRPreviewProps) {
+    const { t } = useTranslation()
+    const svgContainerRef = useRef<HTMLDivElement>(null)
     const [copiedImage, setCopiedImage] = useState(false)
     const [copiedText, setCopiedText] = useState(false)
 
+    // Usar ReturnType<typeof setTimeout> evita la dependencia de NodeJS.Timeout en el navegador
+    const imageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (imageTimerRef.current) clearTimeout(imageTimerRef.current)
+            if (textTimerRef.current) clearTimeout(textTimerRef.current)
+        }
+    }, [])
+
+    const getSVGElement = (): SVGSVGElement | null => {
+        return svgContainerRef.current?.querySelector("svg") ?? null
+    }
+
     const handleDownload = () => {
-        const svg = svgRef.current?.querySelector("svg")
-        if (!svg) return
-        downloadQRAsPNG(svg)
+        const svg = getSVGElement()
+        if (svg) downloadQRAsPNG(svg)
     }
 
     const handleDownloadSVG = () => {
-        const svg = svgRef.current?.querySelector("svg")
-        if (!svg) return
-        downloadQRAsSVG(svg)
+        const svg = getSVGElement()
+        if (svg) downloadQRAsSVG(svg)
     }
 
     const handleCopyImage = async () => {
-        const svg = svgRef.current?.querySelector("svg")
+        const svg = getSVGElement()
         if (!svg) return
+
         const success = await copyQRToClipboard(svg)
         if (success) {
             setCopiedImage(true)
-            setTimeout(() => setCopiedImage(false), 2000)
+            if (imageTimerRef.current) clearTimeout(imageTimerRef.current)
+            imageTimerRef.current = setTimeout(() => setCopiedImage(false), 2000)
         }
     }
 
@@ -42,7 +65,8 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
         const success = await copyToClipboard(textToCopy)
         if (success) {
             setCopiedText(true)
-            setTimeout(() => setCopiedText(false), 2000)
+            if (textTimerRef.current) clearTimeout(textTimerRef.current)
+            textTimerRef.current = setTimeout(() => setCopiedText(false), 2000)
         }
     }
 
@@ -57,7 +81,7 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
                     />
                 ) : value ? (
                     <>
-                        <div ref={svgRef} className="rounded-xl border border-neutral-800 bg-neutral-950 p-6">
+                        <div ref={svgContainerRef} className="rounded-xl border border-neutral-800 bg-neutral-950 p-6">
                             <QRCodeSVG
                                 value={value}
                                 size={200}
@@ -67,23 +91,24 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
                             />
                         </div>
 
-                        <div className="mt-6 flex gap-3">
+                        <div className="mt-6 flex flex-wrap justify-center gap-3">
                             <button
                                 type="button"
                                 onClick={handleCopyImage}
-                                className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+                                aria-live="polite"
+                                className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400 ${
                                     copiedImage
                                         ? "border-green-800 bg-green-950 text-green-400"
                                         : "border-neutral-800 bg-neutral-950 text-neutral-300 hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50"
                                 }`}
                             >
-                                {copiedImage ? "Imagen copiada" : "Copiar imagen"}
+                                {copiedImage ? t("preview.imageCopied", "Imagen copiada") : t("preview.copyImage", "Copiar imagen")}
                             </button>
 
                             <button
                                 type="button"
                                 onClick={handleDownload}
-                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50"
+                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition-colors hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
                             >
                                 PNG
                             </button>
@@ -91,7 +116,7 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
                             <button
                                 type="button"
                                 onClick={handleDownloadSVG}
-                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50"
+                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition-colors hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
                             >
                                 SVG
                             </button>
@@ -103,16 +128,15 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
                             <span className="text-sm font-medium text-neutral-600">QR</span>
                         </div>
                         <p className="mt-6 text-base font-medium text-neutral-300">
-                            Tu código QR aparecerá aquí
+                            {t("preview.placeholderTitle", "Tu código QR aparecerá aquí")}
                         </p>
                         <p className="mt-2 text-sm text-neutral-500">
-                            Introduce datos y haz clic en Generar QR.
+                            {t("preview.placeholderSub", "Introduce datos y haz clic en Generar QR.")}
                         </p>
                     </div>
                 )}
             </div>
 
-            {/* Widget Desplegable de Historial */}
             {history.length > 0 && onSelectHistory && onClearHistory && (
                 <QRHistoryWidget
                     history={history}
@@ -123,5 +147,3 @@ function QRPreview({ value, mode, history = [], onSelectHistory, onClearHistory 
         </section>
     )
 }
-
-export default QRPreview

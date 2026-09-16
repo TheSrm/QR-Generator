@@ -1,8 +1,10 @@
 import { useState, type ChangeEvent, type DragEvent } from "react"
+import { useTranslation } from "react-i18next"
 import type { QRReaderProps } from "../types/types.ts"
 import { decodeQRFromImage } from "../utils/QRDecoderUtils"
 
 function QRReader({ onResult }: QRReaderProps) {
+    const { t } = useTranslation()
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
@@ -15,7 +17,7 @@ function QRReader({ onResult }: QRReaderProps) {
             onResult(decodedText)
         } catch (err) {
             onResult("")
-            setError(err instanceof Error ? err.message : "Error al procesar la imagen")
+            setError(err instanceof Error ? err.message : t("reader.errorProcess", "Error al procesar la imagen"))
         }
     }
 
@@ -32,9 +34,9 @@ function QRReader({ onResult }: QRReaderProps) {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-neutral-50">Leer Código QR</h2>
+            <h2 className="text-lg font-semibold text-neutral-50">{t("reader.title", "Leer Código QR")}</h2>
             <p className="text-sm leading-6 text-neutral-400">
-                Sube o arrastra una imagen con un código QR para extraer su contenido.
+                {t("reader.description", "Sube o arrastra una imagen con un código QR para extraer su contenido.")}
             </p>
 
             <div
@@ -43,7 +45,7 @@ function QRReader({ onResult }: QRReaderProps) {
                 className="mt-4 flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-700 bg-neutral-950 p-6 text-center transition hover:border-neutral-500"
             >
                 {previewUrl ? (
-                    <img src={previewUrl} alt="QR subido" className="max-h-40 rounded-lg object-contain" />
+                    <img src={previewUrl} alt={t("reader.uploadedAlt", "QR subido")} className="max-h-40 rounded-lg object-contain" />
                 ) : (
                     <svg className="size-8 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -51,7 +53,7 @@ function QRReader({ onResult }: QRReaderProps) {
                 )}
 
                 <label htmlFor="qr-file" className="mt-4 cursor-pointer rounded-lg bg-neutral-800 px-4 py-2 text-xs font-medium text-neutral-200 transition hover:bg-neutral-700">
-                    {previewUrl ? "Cambiar imagen" : "Seleccionar imagen"}
+                    {previewUrl ? t("reader.changeImage", "Cambiar imagen") : t("reader.selectImage", "Seleccionar imagen")}
                 </label>
                 <input id="qr-file" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
             </div>

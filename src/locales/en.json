@@ -1,0 +1,97 @@
+{
+  "languages": [
+    {
+      "code": "es",
+      "label": "Spanish",
+      "flag": "https://flagcdn.com/w40/es.png"
+    },
+    {
+      "code": "en",
+      "label": "English",
+      "flag": "https://flagcdn.com/w40/gb.png"
+    }
+  ],
+  "app": {
+    "title": "QR Studio",
+    "subtitle": "Generate and scan QR codes quickly, privately, and securely."
+  },
+  "header": {
+    "headline": "Create a clean QR in seconds",
+    "description": "Paste a URL or text, generate the code, and use it without distractions."
+  },
+  "modes": {
+    "text": "Text",
+    "wifi": "WiFi",
+    "vcard": "vCard",
+    "scan": "Scan"
+  },
+  "form": {
+    "generate": "Generate QR",
+    "text": {
+      "title": "Content",
+      "description": "Enter a URL or any text you want to convert into a QR code."
+    },
+    "vcard": {
+      "title": "Contact Card",
+      "description": "Generate a QR code to add a contact directly to the mobile address book."
+    },
+    "wifi": {
+      "title": "WiFi Network",
+      "description": "Generate a QR code to automatically connect to the network.",
+      "openNetwork": "Open network (no password)"
+    },
+    "labels": {
+      "text": "Text or URL",
+      "ssid": "Network Name (SSID)",
+      "password": "Password",
+      "security": "Security",
+      "name": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "company": "Company"
+    },
+    "placeholders": {
+      "text": "https://example.com",
+      "ssid": "MyWiFiNetwork",
+      "name": "e.g. Jane Doe",
+      "phone": "+1 555 019 2834",
+      "email": "jane@company.com",
+      "company": "My Company LLC"
+    }
+  },
+  "preview": {
+    "placeholderTitle": "Your QR code will appear here",
+    "placeholderSub": "Enter details and click Generate QR.",
+    "copyImage": "Copy image",
+    "imageCopied": "Image copied",
+    "historyTitle": "Recent history",
+    "clearHistory": "Clear"
+  },
+  "reader": {
+    "title": "Read QR Code",
+    "description": "Upload or drag an image with a QR code to extract its content.",
+    "selectImage": "Select image",
+    "changeImage": "Change image",
+    "uploadedAlt": "Uploaded QR",
+    "errorProcess": "Error processing image"
+  },
+  "history": {
+    "title": "Recent history",
+    "clear": "Clear history"
+  },
+  "scanned": {
+    "placeholderTitle": "Scan Result",
+    "placeholderSub": "Upload an image to decode its QR information.",
+    "successBadge": "QR Code Read Successfully",
+    "copyAll": "Copy all content",
+    "copiedSuccess": "Content copied!",
+    "cards": {
+      "extractedText": "Extracted Text",
+      "detectedLink": "Detected Link",
+      "openLink": "Open Link",
+      "wifiData": "WiFi Network Details",
+      "show": "Show",
+      "hide": "Hide"
+    }
+  }
+}

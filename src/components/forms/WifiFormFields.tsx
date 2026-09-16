@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { WifiFormFieldsProps } from "../../types/types"
 
 export function WifiFormFields({
@@ -8,31 +9,35 @@ export function WifiFormFields({
                                    hasError,
                                    inputClasses
                                }: WifiFormFieldsProps) {
+    const { t } = useTranslation()
+
     return (
         <>
-            <h2 className="text-lg font-semibold text-neutral-50">Red WiFi</h2>
+            <h2 className="text-lg font-semibold text-neutral-50">
+                {t("form.wifi.title", "Red WiFi")}
+            </h2>
             <p className="mt-2 text-sm leading-6 text-neutral-400">
-                Genera un QR para conectarse automáticamente a la red.
+                {t("form.wifi.description", "Genera un QR para conectarse automáticamente a la red.")}
             </p>
 
             <div className="mt-8 space-y-5">
                 <div>
                     <label htmlFor="wifi-ssid" className="mb-2 block text-sm font-medium text-neutral-300">
-                        Nombre de la red (SSID)
+                        {t("form.labels.ssid", "Nombre de la red (SSID)")}
                     </label>
                     <input
                         id="wifi-ssid"
                         type="text"
                         value={ssid}
                         onChange={(e) => onWifiChange("ssid", e.target.value)}
-                        placeholder="MiRedWifi"
+                        placeholder={t("form.placeholders.ssid", "MiRedWifi")}
                         className={inputClasses(hasError)}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="wifi-security" className="mb-2 block text-sm font-medium text-neutral-300">
-                        Seguridad
+                        {t("form.labels.security", "Seguridad")}
                     </label>
                     <select
                         id="wifi-security"
@@ -42,14 +47,14 @@ export function WifiFormFields({
                     >
                         <option value="WPA">WPA / WPA2 / WPA3</option>
                         <option value="WEP">WEP</option>
-                        <option value="nopass">Red abierta (sin contraseña)</option>
+                        <option value="nopass">{t("form.wifi.openNetwork", "Red abierta (sin contraseña)")}</option>
                     </select>
                 </div>
 
                 {security !== "nopass" && (
                     <div>
                         <label htmlFor="wifi-password" className="mb-2 block text-sm font-medium text-neutral-300">
-                            Contraseña
+                            {t("form.labels.password", "Contraseña")}
                         </label>
                         <input
                             id="wifi-password"

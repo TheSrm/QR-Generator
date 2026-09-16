@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { QRFormProps } from "../types/types"
 import QRReader from "./QReader"
 import { FormTabs } from "./forms/FormTabs"
@@ -19,6 +20,7 @@ function QRForm({
                     onSubmit,
                     error
                 }: QRFormProps) {
+    const { t } = useTranslation()
 
     const inputClasses = (hasError: boolean) =>
         `w-full rounded-lg border bg-neutral-950 px-4 py-3 text-neutral-50 outline-none transition placeholder:text-neutral-600 focus:ring-4 ${
@@ -83,7 +85,7 @@ function QRForm({
                     onClick={onSubmit}
                     className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
                 >
-                    Generar QR
+                    {t("form.generate", "Generar QR")}
                 </button>
             )}
         </div>

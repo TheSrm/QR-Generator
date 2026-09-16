@@ -118,3 +118,9 @@ export type QRHistoryWidgetProps = {
     onSelect: (item: QRHistoryItem) => void
     onClear: () => void
 }
+
+export type Language = {
+    code: string
+    label: string
+    flag: string // Ruta o URL del SVG de la bandera
+}

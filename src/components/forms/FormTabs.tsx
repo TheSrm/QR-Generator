@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { QRMode } from "../../types/types"
 
 type FormTabsProps = {
@@ -6,11 +7,13 @@ type FormTabsProps = {
 }
 
 export function FormTabs({ mode, onModeChange }: FormTabsProps) {
+    const { t } = useTranslation()
+
     const tabs: { id: QRMode; label: string }[] = [
-        { id: "text", label: "Texto / URL" },
-        { id: "wifi", label: "WiFi" },
-        { id: "vcard", label: "Contacto" },
-        { id: "scan", label: "Leer QR" },
+        { id: "text", label: t("modes.text", "Texto") },
+        { id: "wifi", label: t("modes.wifi", "WiFi") },
+        { id: "vcard", label: t("modes.vcard", "vCard") },
+        { id: "scan", label: t("modes.scan", "Escanear") },
     ]
 
     return (

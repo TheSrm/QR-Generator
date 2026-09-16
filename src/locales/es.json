@@ -1,0 +1,97 @@
+{
+  "languages": [
+    {
+      "code": "es",
+      "label": "Español",
+      "flag": "https://flagcdn.com/w40/es.png"
+    },
+    {
+      "code": "en",
+      "label": "English",
+      "flag": "https://flagcdn.com/w40/gb.png"
+    }
+  ],
+  "app": {
+    "title": "QR Studio",
+    "subtitle": "Genera y escanea códigos QR de forma rápida, privada y segura."
+  },
+  "header": {
+    "headline": "Crea un QR limpio en segundos",
+    "description": "Pega una URL o texto, genera el código y úsalo sin distracciones."
+  },
+  "modes": {
+    "text": "Texto",
+    "wifi": "WiFi",
+    "vcard": "vCard",
+    "scan": "Escanear"
+  },
+  "form": {
+    "generate": "Generar QR",
+    "text": {
+      "title": "Contenido",
+      "description": "Introduce una URL o cualquier texto que quieras convertir en QR."
+    },
+    "vcard": {
+      "title": "Tarjeta de Contacto",
+      "description": "Genera un QR para añadir un contacto directamente a la agenda del móvil."
+    },
+    "wifi": {
+      "title": "Red WiFi",
+      "description": "Genera un QR para conectarse automáticamente a la red.",
+      "openNetwork": "Red abierta (sin contraseña)"
+    },
+    "labels": {
+      "text": "Texto o URL",
+      "ssid": "Nombre de la red (SSID)",
+      "password": "Contraseña",
+      "security": "Seguridad",
+      "name": "Nombre completo",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "company": "Empresa"
+    },
+    "placeholders": {
+      "text": "https://ejemplo.com",
+      "ssid": "MiRedWifi",
+      "name": "Ej. Ana Martínez",
+      "phone": "+34 600 000 000",
+      "email": "ana@empresa.com",
+      "company": "Mi Empresa S.L."
+    }
+  },
+  "preview": {
+    "placeholderTitle": "Tu código QR aparecerá aquí",
+    "placeholderSub": "Introduce datos y haz clic en Generar QR.",
+    "copyImage": "Copiar imagen",
+    "imageCopied": "Imagen copiada",
+    "historyTitle": "Historial reciente",
+    "clearHistory": "Limpiar"
+  },
+  "reader": {
+    "title": "Leer Código QR",
+    "description": "Sube o arrastra una imagen con un código QR para extraer su contenido.",
+    "selectImage": "Seleccionar imagen",
+    "changeImage": "Cambiar imagen",
+    "uploadedAlt": "QR subido",
+    "errorProcess": "Error al procesar la imagen"
+  },
+  "history": {
+    "title": "Historial reciente",
+    "clear": "Borrar historial"
+  },
+  "scanned": {
+    "placeholderTitle": "Resultado del escaneo",
+    "placeholderSub": "Sube una imagen para decodificar la información de su QR.",
+    "successBadge": "QR Leído Correctamente",
+    "copyAll": "Copiar todo el contenido",
+    "copiedSuccess": "¡Contenido copiado!",
+    "cards": {
+      "extractedText": "Texto Extraído",
+      "detectedLink": "Enlace Detectado",
+      "openLink": "Abrir Enlace",
+      "wifiData": "Datos de red WiFi",
+      "show": "Mostrar",
+      "hide": "Ocultar"
+    }
+  }
+}
