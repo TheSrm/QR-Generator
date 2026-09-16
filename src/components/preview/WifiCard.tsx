@@ -7,7 +7,7 @@ export function WifiCard({ wifi }: WifiCardProps) {
     const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-6">
+        <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-left dark:border-neutral-800 dark:bg-neutral-950">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
                 {t("scanned.cards.wifiData", "Datos de red WiFi")}
             </h3>
@@ -16,13 +16,13 @@ export function WifiCard({ wifi }: WifiCardProps) {
                     <p className="text-xs text-neutral-500">
                         {t("form.labels.ssid", "Nombre de la red (SSID)")}
                     </p>
-                    <p className="font-medium text-neutral-100">{wifi.ssid}</p>
+                    <p className="font-medium text-neutral-800 dark:text-neutral-100">{wifi.ssid}</p>
                 </div>
                 <div>
                     <p className="text-xs text-neutral-500">
                         {t("form.labels.security", "Seguridad")}
                     </p>
-                    <p className="font-medium text-neutral-100">{wifi.security}</p>
+                    <p className="font-medium text-neutral-800 dark:text-neutral-100">{wifi.security}</p>
                 </div>
                 {wifi.password && (
                     <div>
@@ -30,13 +30,13 @@ export function WifiCard({ wifi }: WifiCardProps) {
                             {t("form.labels.password", "Contraseña")}
                         </p>
                         <div className="flex items-center justify-between">
-                            <p className="font-mono text-neutral-100">
+                            <p className="font-mono text-neutral-800 dark:text-neutral-100">
                                 {showPassword ? wifi.password : "••••••••••••"}
                             </p>
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-xs text-neutral-400 hover:text-neutral-200"
+                                className="text-xs text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
                             >
                                 {showPassword
                                     ? t("scanned.cards.hide", "Ocultar")

@@ -23,14 +23,14 @@ function QRForm({
     const { t } = useTranslation()
 
     const inputClasses = (hasError: boolean) =>
-        `w-full rounded-lg border bg-neutral-950 px-4 py-3 text-neutral-50 outline-none transition placeholder:text-neutral-600 focus:ring-4 ${
+        `w-full rounded-lg border bg-neutral-100 px-4 py-3 text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:ring-4 dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder:text-neutral-600 ${
             hasError
-                ? "border-red-800 focus:border-red-600 focus:ring-red-900/30"
-                : "border-neutral-800 focus:border-neutral-600 focus:ring-neutral-800/50"
+                ? "border-red-500 focus:border-red-600 focus:ring-red-500/20 dark:border-red-800 dark:focus:border-red-600 dark:focus:ring-red-900/30"
+                : "border-neutral-300 focus:border-neutral-400 focus:ring-neutral-200 dark:border-neutral-800 dark:focus:border-neutral-600 dark:focus:ring-neutral-800/50"
         }`
 
     return (
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             {/* Pestañas de navegación */}
             <FormTabs mode={mode} onModeChange={onModeChange} />
 
@@ -70,7 +70,7 @@ function QRForm({
 
             {/* Mensaje de error general */}
             {error && mode !== "scan" && (
-                <p className="mt-4 flex items-center gap-1.5 text-sm text-red-400">
+                <p className="mt-4 flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400">
                     <svg className="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
@@ -83,7 +83,7 @@ function QRForm({
                 <button
                     type="button"
                     onClick={onSubmit}
-                    className="mt-6 w-full rounded-lg bg-neutral-50 px-4 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200 active:bg-neutral-300"
+                    className="mt-6 w-full rounded-lg bg-neutral-900 px-4 py-3 font-medium text-neutral-50 transition hover:bg-neutral-800 active:bg-neutral-700 dark:bg-neutral-50 dark:text-neutral-950 dark:hover:bg-neutral-200 dark:active:bg-neutral-300"
                 >
                     {t("form.generate", "Generar QR")}
                 </button>

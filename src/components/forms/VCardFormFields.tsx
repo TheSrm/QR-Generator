@@ -6,16 +6,16 @@ export function VCardFormFields({ vCardData, onVCardChange, hasError, inputClass
 
     return (
         <>
-            <h2 className="text-lg font-semibold text-neutral-50">
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
                 {t("form.vcard.title", "Tarjeta de Contacto")}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-neutral-400">
+            <p className="mt-2 text-sm leading-6 text-neutral-600 dark:text-neutral-400">
                 {t("form.vcard.description", "Genera un QR para añadir un contacto directamente a la agenda del móvil.")}
             </p>
 
             <div className="mt-6 space-y-4">
                 <div>
-                    <label htmlFor="vcard-name" className="mb-1 block text-sm font-medium text-neutral-300">
+                    <label htmlFor="vcard-name" className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                         {t("form.labels.name", "Nombre completo")} *
                     </label>
                     <input
@@ -29,7 +29,7 @@ export function VCardFormFields({ vCardData, onVCardChange, hasError, inputClass
                 </div>
 
                 <div>
-                    <label htmlFor="vcard-phone" className="mb-1 block text-sm font-medium text-neutral-300">
+                    <label htmlFor="vcard-phone" className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                         {t("form.labels.phone", "Teléfono")}
                     </label>
                     <input
@@ -43,7 +43,7 @@ export function VCardFormFields({ vCardData, onVCardChange, hasError, inputClass
                 </div>
 
                 <div>
-                    <label htmlFor="vcard-email" className="mb-1 block text-sm font-medium text-neutral-300">
+                    <label htmlFor="vcard-email" className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                         {t("form.labels.email", "Email")}
                     </label>
                     <input
@@ -57,7 +57,7 @@ export function VCardFormFields({ vCardData, onVCardChange, hasError, inputClass
                 </div>
 
                 <div>
-                    <label htmlFor="vcard-company" className="mb-1 block text-sm font-medium text-neutral-300">
+                    <label htmlFor="vcard-company" className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                         {t("form.labels.company", "Empresa")}
                     </label>
                     <input

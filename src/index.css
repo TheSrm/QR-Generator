@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  /* Fondo claro por defecto (bg-neutral-50) / Fondo oscuro si se activa .dark (dark:bg-neutral-950) */
+  @apply bg-neutral-50 text-neutral-900 transition-colors dark:bg-neutral-950 dark:text-neutral-50;
+}
+
 :root {
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;

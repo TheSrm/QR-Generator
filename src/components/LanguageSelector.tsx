@@ -1,28 +1,18 @@
 import { useState, useRef, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import type {Language} from "../types/types.ts"
-
-const LANGUAGES: Language[] = [
-    {
-        code: "es",
-        label: "Español",
-        // SVG directo de la bandera de España
-        flag: "https://flagcdn.com/w40/es.png"
-    },
-    {
-        code: "en",
-        label: "English",
-        // SVG directo de la bandera de Reino Unido
-        flag: "https://flagcdn.com/w40/gb.png"
-    }
-]
+import type { Language } from "../types/types.ts"
 
 export function LanguageSelector() {
-    const { i18n } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [isOpen, setIsOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
-    const currentLang = LANGUAGES.find((l) => l.code === i18n.language) || LANGUAGES[0]
+    // Extrae el array de objetos desde el JSON
+    const languages = t("languages", { returnObjects: true }) as Language[]
+
+    // Normaliza el código de idioma activo (por si i18n devuelve 'es-ES' o 'en-US')
+    const currentCode = i18n.language ? i18n.language.slice(0, 2) : "es"
+    const currentLang = languages.find((l) => l.code === currentCode) || languages[0]
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -44,7 +34,7 @@ export function LanguageSelector() {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-xs font-medium text-neutral-300 transition hover:border-neutral-700 hover:bg-neutral-900"
+                className="flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900"
             >
                 <img
                     src={currentLang.flag}
@@ -53,7 +43,7 @@ export function LanguageSelector() {
                 />
                 <span>{currentLang.label}</span>
                 <svg
-                    className={`size-3 text-neutral-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                    className={`size-3 text-neutral-500 transition-transform dark:text-neutral-400 ${isOpen ? "rotate-180" : ""}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -64,16 +54,16 @@ export function LanguageSelector() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-32 rounded-xl border border-neutral-800 bg-neutral-950 p-1 shadow-lg">
-                    {LANGUAGES.map((lang) => (
+                <div className="absolute right-0 z-50 mt-2 w-32 rounded-xl border border-neutral-200 bg-white p-1 shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+                    {languages.map((lang) => (
                         <button
                             key={lang.code}
                             type="button"
                             onClick={() => handleSelect(lang.code)}
                             className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs transition ${
-                                i18n.language === lang.code
-                                    ? "bg-neutral-800 font-semibold text-neutral-50"
-                                    : "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-200"
+                                currentCode === lang.code
+                                    ? "bg-neutral-100 font-semibold text-neutral-900 dark:bg-neutral-800 dark:text-neutral-50"
+                                    : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                             }`}
                         >
                             <img

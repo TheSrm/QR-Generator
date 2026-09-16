@@ -2,7 +2,7 @@ import QRForm from "./components/QRForm"
 import QRPreview from "./components/QRPreview"
 import { Analytics } from "@vercel/analytics/react"
 import { useQRState } from "./hooks/UseQRState"
-import {Header} from "./components/Header.tsx";
+import { Header } from "./components/Header.tsx"
 
 export default function App() {
     const {
@@ -26,10 +26,10 @@ export default function App() {
     } = useQRState()
 
     return (
-        <main className="min-h-screen bg-neutral-950 px-4 py-12 text-neutral-50 sm:px-6 lg:px-8">
+        <main className="min-h-screen bg-neutral-100 text-neutral-900 transition-colors duration-200 px-4 py-12 dark:bg-neutral-950 dark:text-neutral-50 sm:px-6 lg:px-8">
             <Analytics />
             <div className="mx-auto max-w-5xl">
-                 <Header />
+                <Header />
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <QRForm

@@ -17,7 +17,7 @@ export function FormTabs({ mode, onModeChange }: FormTabsProps) {
     ]
 
     return (
-        <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-neutral-800 bg-neutral-950 p-1.5 sm:grid-cols-4">
+        <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-neutral-200 bg-neutral-100 p-1.5 transition-colors dark:border-neutral-800 dark:bg-neutral-950 sm:grid-cols-4">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
@@ -25,8 +25,8 @@ export function FormTabs({ mode, onModeChange }: FormTabsProps) {
                     onClick={() => onModeChange(tab.id)}
                     className={`rounded-lg py-2.5 text-xs font-medium transition sm:text-sm ${
                         mode === tab.id
-                            ? "bg-neutral-800 text-neutral-50 shadow-sm"
-                            : "text-neutral-400 hover:text-neutral-200"
+                            ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-800 dark:text-neutral-50"
+                            : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
                     }`}
                 >
                     {tab.label}

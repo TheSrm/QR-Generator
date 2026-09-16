@@ -5,6 +5,7 @@ import { downloadQRAsPNG, downloadQRAsSVG, copyQRToClipboard, copyToClipboard } 
 import type { QRPreviewProps, QRHistoryItem } from "../types/types"
 import { ScannedContent } from "./preview/ScannedContent"
 import { QRHistoryWidget } from "./preview/QRHistoryWidget"
+import { useTheme } from "../hooks/UseTheme"
 
 type ExtendedQRPreviewProps = QRPreviewProps & {
     history?: QRHistoryItem[]
@@ -20,11 +21,11 @@ export default function QRPreview({
                                       onClearHistory
                                   }: ExtendedQRPreviewProps) {
     const { t } = useTranslation()
+    const { theme } = useTheme()
     const svgContainerRef = useRef<HTMLDivElement>(null)
     const [copiedImage, setCopiedImage] = useState(false)
     const [copiedText, setCopiedText] = useState(false)
 
-    // Usar ReturnType<typeof setTimeout> evita la dependencia de NodeJS.Timeout en el navegador
     const imageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -71,7 +72,7 @@ export default function QRPreview({
     }
 
     return (
-        <section className="flex min-h-[28rem] flex-col justify-between rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+        <section className="flex min-h-[28rem] flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="flex flex-1 flex-col items-center justify-center text-center">
                 {mode === "scan" ? (
                     <ScannedContent
@@ -81,11 +82,11 @@ export default function QRPreview({
                     />
                 ) : value ? (
                     <>
-                        <div ref={svgContainerRef} className="rounded-xl border border-neutral-800 bg-neutral-950 p-6">
+                        <div ref={svgContainerRef} className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-950">
                             <QRCodeSVG
                                 value={value}
                                 size={200}
-                                fgColor="#fafafa"
+                                fgColor={theme === "dark" ? "#fafafa" : "#09090b"}
                                 bgColor="transparent"
                                 level="H"
                             />
@@ -98,8 +99,8 @@ export default function QRPreview({
                                 aria-live="polite"
                                 className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400 ${
                                     copiedImage
-                                        ? "border-green-800 bg-green-950 text-green-400"
-                                        : "border-neutral-800 bg-neutral-950 text-neutral-300 hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50"
+                                        ? "border-green-600 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400"
+                                        : "border-neutral-200 bg-neutral-100 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
                                 }`}
                             >
                                 {copiedImage ? t("preview.imageCopied", "Imagen copiada") : t("preview.copyImage", "Copiar imagen")}
@@ -108,7 +109,7 @@ export default function QRPreview({
                             <button
                                 type="button"
                                 onClick={handleDownload}
-                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition-colors hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
+                                className="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-100 px-4 py-2.5 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:bg-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
                             >
                                 PNG
                             </button>
@@ -116,7 +117,7 @@ export default function QRPreview({
                             <button
                                 type="button"
                                 onClick={handleDownloadSVG}
-                                className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2.5 text-sm font-medium text-neutral-300 transition-colors hover:border-neutral-700 hover:bg-neutral-800 hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
+                                className="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-100 px-4 py-2.5 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:bg-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
                             >
                                 SVG
                             </button>
@@ -124,10 +125,10 @@ export default function QRPreview({
                     </>
                 ) : (
                     <div className="text-center">
-                        <div className="mx-auto grid size-56 place-items-center rounded-xl border border-dashed border-neutral-800 bg-neutral-950/50">
-                            <span className="text-sm font-medium text-neutral-600">QR</span>
+                        <div className="mx-auto grid size-56 place-items-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950/50">
+                            <span className="text-sm font-medium text-neutral-400 dark:text-neutral-600">QR</span>
                         </div>
-                        <p className="mt-6 text-base font-medium text-neutral-300">
+                        <p className="mt-6 text-base font-medium text-neutral-800 dark:text-neutral-300">
                             {t("preview.placeholderTitle", "Tu código QR aparecerá aquí")}
                         </p>
                         <p className="mt-2 text-sm text-neutral-500">
