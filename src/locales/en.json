@@ -65,6 +65,10 @@
     "copyImage": "Copy image",
     "imageCopied": "Image copied",
     "historyTitle": "Recent history",
+    "customize": "Customize appearance",
+    "fgColor": "QR Color",
+    "bgColor": "Background Color",
+    "resetColors": "Reset colors",
     "clearHistory": "Clear"
   },
   "reader": {
@@ -73,12 +77,14 @@
     "selectImage": "Select image",
     "changeImage": "Change image",
     "uploadedAlt": "Uploaded QR",
+
     "errorProcess": "Error processing image"
   },
   "history": {
     "title": "Recent history",
     "clear": "Clear history"
   },
+
   "scanned": {
     "placeholderTitle": "Scan Result",
     "placeholderSub": "Upload an image to decode its QR information.",

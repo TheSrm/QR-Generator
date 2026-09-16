@@ -65,6 +65,10 @@
     "copyImage": "Copiar imagen",
     "imageCopied": "Imagen copiada",
     "historyTitle": "Historial reciente",
+    "customize": "Personalizar aspecto",
+    "fgColor": "Color del QR",
+    "bgColor": "Color de fondo",
+    "resetColors": "Restablecer colores",
     "clearHistory": "Limpiar"
   },
   "reader": {

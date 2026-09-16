@@ -2,16 +2,11 @@ import { useRef, useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { QRCodeSVG } from "qrcode.react"
 import { downloadQRAsPNG, downloadQRAsSVG, copyQRToClipboard, copyToClipboard } from "../utils/QrUtils"
-import type { QRPreviewProps, QRHistoryItem } from "../types/types"
+import type { ExtendedQRPreviewProps } from "../types/types"
 import { ScannedContent } from "./preview/ScannedContent"
 import { QRHistoryWidget } from "./preview/QRHistoryWidget"
+import { CustomizeAccordion } from "./preview/CustomizeAccordion"
 import { useTheme } from "../hooks/UseTheme"
-
-type ExtendedQRPreviewProps = QRPreviewProps & {
-    history?: QRHistoryItem[]
-    onSelectHistory?: (item: QRHistoryItem) => void
-    onClearHistory?: () => void
-}
 
 export default function QRPreview({
                                       value,
@@ -25,6 +20,13 @@ export default function QRPreview({
     const svgContainerRef = useRef<HTMLDivElement>(null)
     const [copiedImage, setCopiedImage] = useState(false)
     const [copiedText, setCopiedText] = useState(false)
+
+    // Estados de personalización
+    const [customFgColor, setCustomFgColor] = useState<string | null>(null)
+    const [bgColor, setBgColor] = useState<string>("transparent")
+    const [logoUrl, setLogoUrl] = useState<string | null>(null)
+
+    const fgColor = customFgColor ?? (theme === "dark" ? "#fafafa" : "#09090b")
 
     const imageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -71,6 +73,12 @@ export default function QRPreview({
         }
     }
 
+    const handleResetColors = () => {
+        setCustomFgColor(null)
+        setBgColor("transparent")
+        setLogoUrl(null)
+    }
+
     return (
         <section className="flex min-h-[28rem] flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="flex flex-1 flex-col items-center justify-center text-center">
@@ -82,15 +90,42 @@ export default function QRPreview({
                     />
                 ) : value ? (
                     <>
-                        <div ref={svgContainerRef} className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-950">
+                        <div
+                            ref={svgContainerRef}
+                            style={{ backgroundColor: bgColor === "transparent" ? undefined : bgColor }}
+                            className="rounded-xl border border-neutral-200 bg-white p-6 transition-colors dark:border-neutral-800 dark:bg-neutral-950"
+                        >
                             <QRCodeSVG
                                 value={value}
                                 size={200}
-                                fgColor={theme === "dark" ? "#fafafa" : "#09090b"}
-                                bgColor="transparent"
+                                fgColor={fgColor}
+                                bgColor={bgColor}
                                 level="H"
+                                imageSettings={
+                                    logoUrl
+                                        ? {
+                                            src: logoUrl,
+                                            x: undefined,
+                                            y: undefined,
+                                            height: 36,
+                                            width: 36,
+                                            excavate: true,
+                                        }
+                                        : undefined
+                                }
                             />
                         </div>
+
+                        {/* Acordeón Plegable de Personalización */}
+                        <CustomizeAccordion
+                            fgColor={fgColor}
+                            bgColor={bgColor}
+                            logoUrl={logoUrl}
+                            onFgColorChange={(color) => setCustomFgColor(color)}
+                            onBgColorChange={(color) => setBgColor(color)}
+                            onLogoChange={(url) => setLogoUrl(url)}
+                            onReset={handleResetColors}
+                        />
 
                         <div className="mt-6 flex flex-wrap justify-center gap-3">
                             <button

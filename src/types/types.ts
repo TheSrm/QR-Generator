@@ -124,3 +124,28 @@ export type Language = {
     label: string
     flag: string // Ruta o URL del SVG de la bandera
 }
+
+export type ColorPickerProps = {
+    fgColor: string
+    bgColor: string
+    onFgColorChange: (color: string) => void
+    onBgColorChange: (color: string) => void
+    onReset: () => void
+}
+
+export type ExtendedQRPreviewProps = QRPreviewProps & {
+    history?: QRHistoryItem[]
+    onSelectHistory?: (item: QRHistoryItem) => void
+    onClearHistory?: () => void
+}
+
+export type CustomizeAccordionProps = {
+    fgColor: string
+    bgColor: string
+    logoUrl: string | null
+    onFgColorChange: (color: string) => void
+    onBgColorChange: (color: string) => void
+    onLogoChange: (url: string | null) => void
+    onReset: () => void
+}
+
