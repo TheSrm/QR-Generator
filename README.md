@@ -156,12 +156,8 @@ La aplicación soporta múltiples idiomas mediante `react-i18next`. Los dicciona
 - `es.json` - Español
 - `en.json` - Inglés
 
-Para cambiar el idioma:
+Nuevos idiomas podrían añadirse en un futuro
 
-```typescript
-const { t, i18n } = useTranslation()
-i18n.changeLanguage('en')
-```
 
 ## Privacidad
 
