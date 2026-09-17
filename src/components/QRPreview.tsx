@@ -21,12 +21,14 @@ export default function QRPreview({
     const [copiedImage, setCopiedImage] = useState(false)
     const [copiedText, setCopiedText] = useState(false)
 
-    // Estados de personalización
+
     const [customFgColor, setCustomFgColor] = useState<string | null>(null)
-    const [bgColor, setBgColor] = useState<string>("transparent")
+    const [customBgColor, setCustomBgColor] = useState<string | null>(null)
     const [logoUrl, setLogoUrl] = useState<string | null>(null)
 
+
     const fgColor = customFgColor ?? (theme === "dark" ? "#fafafa" : "#09090b")
+    const bgColor = customBgColor ?? (theme === "dark" ? "#09090b" : "#ffffff")
 
     const imageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -75,7 +77,7 @@ export default function QRPreview({
 
     const handleResetColors = () => {
         setCustomFgColor(null)
-        setBgColor("transparent")
+        setCustomBgColor(null)
         setLogoUrl(null)
     }
 
@@ -92,8 +94,8 @@ export default function QRPreview({
                     <>
                         <div
                             ref={svgContainerRef}
-                            style={{ backgroundColor: bgColor === "transparent" ? undefined : bgColor }}
-                            className="rounded-xl border border-neutral-200 bg-white p-6 transition-colors dark:border-neutral-800 dark:bg-neutral-950"
+                            style={{ backgroundColor: bgColor }}
+                            className="rounded-xl border border-neutral-200 p-6 transition-colors dark:border-neutral-800"
                         >
                             <QRCodeSVG
                                 value={value}
@@ -122,7 +124,7 @@ export default function QRPreview({
                             bgColor={bgColor}
                             logoUrl={logoUrl}
                             onFgColorChange={(color) => setCustomFgColor(color)}
-                            onBgColorChange={(color) => setBgColor(color)}
+                            onBgColorChange={(color) => setCustomBgColor(color)}
                             onLogoChange={(url) => setLogoUrl(url)}
                             onReset={handleResetColors}
                         />
